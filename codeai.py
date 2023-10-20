@@ -1,16 +1,19 @@
 import cv2
 
-cascPath = "src\\face.xml"
-cascPath = "src\\eyeglass.xml"
+facePath = "src\\face.xml"
+eyeglassPath = "src\\eyeglass.xml"
+smilePath = "src\\smile.xml"
 
-faceCascade = cv2.CascadeClassifier(cascPath)
+faceCascade = cv2.CascadeClassifier(facePath)
+eyeglassCascade = cv2.CascadeClassifier(eyeglassPath)
+smileCascade = cv2. CascadeClassifier(smilePath)
 
 
 video_capture = cv2.VideoCapture(0)
 
 while True:
     # Capture frame-by-frame
-    rect, frame = video_capture.read()    
+    ret, frame = video_capture.read()    
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = faceCascade.detectMultiScale(
@@ -21,15 +24,33 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
     
-
-    # Draw a rectangle around the facesq
-    # print(faces)
+    eyeglasses = eyeglassCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+    
+    smile = smileCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.8,
+        minNeighbors=20,
+        minSize=(25, 25),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+    
+   # Draw rectangles around the faces
     for (x, y, w, h) in faces:        
-        # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)        
-        center_coordinates = x + w // 2, y + h // 2
-        radius = w // 2 # or can be h / 2 or can be anything based on your requirements
-        cv2.circle(frame, center_coordinates, radius, (0, 0, 100), 3)
-        
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)        
+
+    # Draw rectangles around the eyeglasses
+    for (x, y, w, h) in eyeglasses:        
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 100), 2)
+    
+    # Draw rectangles around the smiles
+    for (x, y, w, h) in smile:        
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (100, 0, 100), 2)
 
     # Display the resulting frame
     cv2.imshow('Video', frame)
