@@ -16,7 +16,7 @@ while True:
     ret, frame = video_capture.read()    
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    faces = faceCascade.detectMultiScale(
+    face = faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
@@ -24,7 +24,7 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
     
-    eyeglasses = eyeglassCascade.detectMultiScale(
+    eyeglass = eyeglassCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
@@ -41,11 +41,11 @@ while True:
     )
     
    # Draw rectangles around the faces
-    for (x, y, w, h) in faces:        
+    for (x, y, w, h) in face:        
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)        
 
     # Draw rectangles around the eyeglasses
-    for (x, y, w, h) in eyeglasses:        
+    for (x, y, w, h) in eyeglass:        
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 100), 2)
     
     # Draw rectangles around the smiles
